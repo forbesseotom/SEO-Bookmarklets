@@ -1,0 +1,1 @@
+javascript:(function()%7Blet%20style%20%3D%20%60%3Cstyle%3E.bookmarklet-display-none%7Bdisplay%3A%20none%3B%7D%3B%3C%2Fstyle%3E%60%3Bdocument.body.insertAdjacentHTML(%22afterbegin%22%2Cstyle)%3Bdocument.querySelector(%22%23wpadminbar%22).classList.toggle(%22bookmarklet-display-none%22)%7D)()
