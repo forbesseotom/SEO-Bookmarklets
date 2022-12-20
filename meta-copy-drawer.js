@@ -33,7 +33,7 @@ try{
     }
 try{    
      metaRobots = document.querySelector("meta[name='robots']").content.toLowerCase();
-     metaRobotsFlag = ( metaRobots.innerText.includes("noindex") ||  metaRobots.innerText.includes("nofollow") ) ? false : true ;
+     metaRobotsFlag = ( metaRobots.includes("noindex") ||  metaRobots.includes("nofollow") ) ? false : true ;
 
     } catch(e) {
         console.log("Error finding Meta Robots");
@@ -51,8 +51,8 @@ let modalElement = `
     <p>${ metaDescription ? metaDescription : "No Meta Description Found"}</p>
     <p>Word Count: <span class="descriptionCount">${descriptionCount ? descriptionCount : "No Meta Description Found"}</span></p>
 
-    <p><strong>Meta robots</strong>: <span class=${metaRobotsFlag ? "Pass" : "Fail"}>${metaRobotsFlag ? "Pass" : "Fail"}</span></p> 
-    <p>${ metaRobots ? metaRobots : "No Meta Robots Found"}</p>
+    <p><strong>Meta robots</strong>: <span class=${metaRobotsFlag ? "Pass" : "Fail"}>${metaRobotsFlag ? "Indexable" : "Non-Indexable"}</span></p> 
+    <p>${ metaRobotsFlag ? metaRobots : "No Meta Robots Found"}</p>
 
     <p><strong>Canonical</strong>: <span class=${canonicalFlag  ? "Pass" : "Fail"}>${canonicalFlag  ? "Pass" : "Fail"}</span></p>
     <p>${ canonicalFlag ? canonical : "No Canonical Tag Found"}</p>
