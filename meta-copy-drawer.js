@@ -32,7 +32,7 @@ try{
         console.log("Error finding Canonical");
     }
 try{    
-     metaRobots = document.querySelector("meta[name='robots']").content.toLowerCase();
+     metaRobots = document.querySelector("meta[name='robots']") ? document.querySelector("meta[name='robots']").content.toLowerCase() : "";
      metaRobotsFlag = ( metaRobots.includes("noindex") ||  metaRobots.includes("nofollow") ) ? false : true ;
 
     } catch(e) {
