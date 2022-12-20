@@ -25,8 +25,8 @@ try{
     }
 
 try{    
-     canonical = document.querySelector("link[rel='canonical']").href
-     canonicalFlag = document.querySelector("link[rel='canonical']").href === window.location.href ? "Pass" : "Fail";
+     canonical = document.querySelector("link[rel='canonical']").href.toLowerCase();
+     canonicalFlag = canonical === window.location.href ? "Pass" : "Fail";
 
     } catch(e) {
         console.log("Error finding Canonical");
@@ -51,11 +51,11 @@ let modalElement = `
     <p>${ metaDescription ? metaDescription : "No Meta Description Found"}</p>
     <p>Word Count: <span class="descriptionCount">${descriptionCount ? descriptionCount : "No Meta Description Found"}</span></p>
 
-    <p><strong>Meta robots</strong>:<span class=${metaRobotsFlag ? "Pass" : "Fail"}>${metaRobotsFlag ? "Pass" : "Fail"}</span></p> 
+    <p><strong>Meta robots</strong>: <span class=${metaRobotsFlag ? "Pass" : "Fail"}>${metaRobotsFlag ? "Pass" : "Fail"}</span></p> 
     <p>${ metaRobots ? metaRobots : "No Meta Robots Found"}</p>
 
-    <p><strong>Canonical</strong>:<span class=${canonicalFlag}>${canonicalFlag}</span></p>
-    <p>${ canonical ? canonical : "No Canonical Tag Found"}</p>
+    <p><strong>Canonical</strong>: <span class=${canonicalFlag  ? "Pass" : "Fail"}>${canonicalFlag  ? "Pass" : "Fail"}</span></p>
+    <p>${ canonicalFlag ? canonical : "No Canonical Tag Found"}</p>
     <style>
         .metaBlockModal{
             display: block;
@@ -110,4 +110,4 @@ document.querySelector(".titleCount").innerText = titleCount;
 document.querySelector(".descriptionCount").innerText = descriptionCount;
 document.querySelector(".metaBlockModal-closeButton").addEventListener("click",(e)=>{
     document.querySelector(".metaBlockModal").remove();
-})
+});
