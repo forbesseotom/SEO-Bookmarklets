@@ -1,38 +1,36 @@
-let links = document.querySelectorAll("nav a");
+let links = document.querySelectorAll("nav a");;
 let arrayOfBrokenURLs = [];
-let consoleMessage = [];
-window.copyMessage = [];
-
-
 
 async function processLinks(linksArray) {
-  for (const link of linksArray) {
-    if (link.href) {
-      await testLink(link);
+    if(!linksArray.length){ 
+        alert("No links found");
+        return 
     }
-  }
-  if (arrayOfBrokenURLs.length) {
-    arrayOfBrokenURLs.forEach((brokenLink) => {
-      copyMessage.push(`\n Anchor: ${brokenLink.innerText} - Href: ${brokenLink.href} `);
-      consoleMessage.push(`\n Anchor: ${brokenLink.innerText} - Href: ${brokenLink.href}`);
-    });
-    console.log(consoleMessage);
-    createButton();
-  }
+    setupModal(arrayOfBrokenURLs);
+
+    for (const [index,link] of linksArray.entries()) {
+        if (link.href) {
+            let remainder = linksArray.length - index;
+            await testLink(link,remainder);
+        }
+    }
 }
-async function testLink(link) {
-  let request = new Request(link);
-  let headers = new Headers({ "User-Agent": "MY-UA-STRING" });
+
+async function testLink(link,remainder) {
+  let request = new Request(link.href);
   try {
     await fetch(request, {
-      method: "GET",
-      headers: headers,
+      method: "GET"
     }).then((response) => {
+        remainingURLs(remainder);  
       if (response.ok && response.redirected == false) {
         link.style.color = "green";
       } else {
         link.style.color = "red";
-        arrayOfBrokenURLs.push(link);
+        arrayOfBrokenURLs.push(link.href);
+        updateModalCount(arrayOfBrokenURLs.length);
+        appendBrokenURLs(link.href,link.innerText,"#brokenLinksList");
+        addCloseEventListener()
       }
     });
   } catch (e) {
@@ -40,20 +38,78 @@ async function testLink(link) {
   }
 }
 
-if(!window.copyToClipboard){
-    window.copyToClipboard = function(str){
-        const el = document.createElement("textarea");
-        el.value = str;
-        document.body.appendChild(el);
-        el.select();
-        document.execCommand("copy");
-        document.body.removeChild(el);
-        console.log("Broken Links Copied");
+function setupModal(arrayOfBrokenURLs){
+    console.log("Setting up modal");
+    let modalElement = `
+    <div class="metaBlockModal" >
+        <span class="metaBlockModal-closeButton" ></span>
+        <p>Number of non-200 URLs found: <span class="count">0</span> out of ${links.length}</p>
+        <p>Remaining URLs: <span class="remaining"></span> </p>
+        <ul id="brokenLinksList">
+
+        </ul>
+    <style>
+        .metaBlockModal{
+            display: block;
+            width: 100%;
+            background-color: lightgray;
+            z-index: 100000000;
+            padding: 30px 0px 20px 30%;
+            position:relative;
+            line-height: 18px;
+            font-size: 16px;
+            font-family: helvetica,serif;
+        }
+        .metaBlockModal p{
+            margin-bottom: 10px;
+        }
+        .metaBlockModal-closeButton{
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            border: 1px solid black;
+            padding: 10px 15px;
+            border-radius:50%;
+            cursor:pointer;
+            background-color: white;
+            
+        }
+        .metaBlockModal-closeButton:after{
+            content: "+";
+            font-size: 1rem;
+        }
+        .metaBlockModal-closeButton:hover{
+            transform: rotate(45deg);
+            background-color: black;
+            color: white;
+        }
+    </style>
+    </div>
+`;
+
+document.body.insertAdjacentHTML("afterbegin",modalElement);
+}
+
+function updateModalCount(index) {
+    if(document.querySelector(".metaBlockModal .count")){
+        document.querySelector(".metaBlockModal .count").innerText = index;
     }
 }
 
-function createButton() {
-  const copyButton = `<div><button style="display:block; margin-left:auto; margin-top:20px;" type="submit" onclick="copyToClipboard(copyMessage);">Copy</button</div>`;
-  document.body.insertAdjacentHTML("afterbegin", copyButton);
+function appendBrokenURLs(brokenLinkAsText,anchorText,mountPoint){
+    let li = document.createElement("li");
+    li.textContent = anchorText + " - " + brokenLinkAsText.toString();
+    document.querySelector(mountPoint).insertAdjacentElement("beforeend",li);
 }
+
+function addCloseEventListener() {
+    document.querySelector(".metaBlockModal-closeButton").addEventListener("click",(e)=>{
+        document.querySelector(".metaBlockModal").remove();
+    })
+}
+
+function remainingURLs(remainder){
+    document.querySelector(".remaining").innerText = remainder;
+}
+
 processLinks(links);
